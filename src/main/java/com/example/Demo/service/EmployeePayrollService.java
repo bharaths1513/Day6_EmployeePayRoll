@@ -1,10 +1,12 @@
 package com.example.Demo.service;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.Demo.dto.EmployeePayrollDTO;
+import com.example.Demo.exception.EmployeePayrollException;
 import com.example.Demo.model.EmployeePayrollData;
 
 @Service
@@ -20,7 +22,8 @@ class EmployeePayrollService implements IEmploeePayrollService {
 	@Override
 	public EmployeePayrollData getEmployeePayrollDataById(int empId) {
 
-		return employeePayrollList.get(empId - 1);
+		return employeePayrollList.stream().filter(empData ->empData.getEmployeeId() == empId).findFirst()
+				.orElseThrow(() -> new EmployeePayrollException("Employee Not Found"));
 	}
 
 	@Override
@@ -44,7 +47,7 @@ class EmployeePayrollService implements IEmploeePayrollService {
 	@Override
 	public void deleteEmployeePayrollData(int empId) {
 		
-		
+		employeePayrollList.remove(empId - 1);
 	}
 
 	
