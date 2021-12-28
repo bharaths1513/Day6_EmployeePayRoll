@@ -1,54 +1,66 @@
 package com.example.Demo.service;
 
-import java.util.ArrayList;
-
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.Demo.Repository.EmployeePayrollRepository;
 import com.example.Demo.dto.EmployeePayrollDTO;
 import com.example.Demo.exception.EmployeePayrollException;
 import com.example.Demo.model.EmployeePayrollData;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 class EmployeePayrollService implements IEmploeePayrollService {
-	private List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+
+	@Autowired
+	private EmployeePayrollRepository empRepo;
 
 	@Override
 	public List<EmployeePayrollData> getEmployeePayrollData() {
 
-		return employeePayrollList;
+		return empRepo.findAll();
 	}
 
 	@Override
 	public EmployeePayrollData getEmployeePayrollDataById(int empId) {
 
-		return employeePayrollList.stream().filter(empData ->empData.getEmployeeId() == empId).findFirst()
-				.orElseThrow(() -> new EmployeePayrollException("Employee Not Found"));
+		return empRepo.findById(empId).orElseThrow(
+				() -> new EmployeePayrollException("Employee With EmployeeId " + empId + " Does not exists..!"));
 	}
 
 	@Override
 	public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO empPayrollDTO) {
 		EmployeePayrollData empData = null;
-		empData = new EmployeePayrollData(employeePayrollList.size() + 1, empPayrollDTO);
-		employeePayrollList.add(empData);
-		return empData;
+		empData = new EmployeePayrollData(empPayrollDTO);
+		log.debug("emp data: " + empData.toString());
+		return empRepo.save(empData);
 	}
 
 	@Override
 	public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO empPayrollDTO) {
 		EmployeePayrollData empData = this.getEmployeePayrollDataById(empId);
-		empData.setName(empPayrollDTO.name);
-		empData.setSalary(empPayrollDTO.salary);
-		employeePayrollList.set(empId - 1, empData);
-		return empData;
+		empData.updateEmployeePayrollData(empPayrollDTO);
+		return empRepo.save(empData);
 
 	}
 
 	@Override
 	public void deleteEmployeePayrollData(int empId) {
+
+		EmployeePayrollData empData = this.getEmployeePayrollDataById(empId);
+		empRepo.delete(empData);
+	}
+
+	@Override
+	public List<EmployeePayrollData> getEmployeesByDepartments(String department) {
 		
-		employeePayrollList.remove(empId - 1);
+		return empRepo.findEmployeesByDepartments(department);
 	}
 
 	
+
 }
