@@ -1,7 +1,9 @@
 package com.example.Demo.model;
 
-import java.time.LocalDate;
 
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -11,8 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;
 
 import com.example.Demo.dto.EmployeePayrollDTO;
 
@@ -24,44 +26,48 @@ public @Data class EmployeePayrollData {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="employee_Id")
+	@Column(name = "employee_id")
 	private int employeeId;
-	
-	@Column(name="name")
+	@Column(name = "name")
 	private String name;
+	@Column(name = "salary")
 	private long salary;
+	@Column(name = "gender")
 	private String gender;
-	private LocalDate startDate;
+//	@Column(name = "start_date")
+	private Date startDate;
+	@Column(name = "note")
 	private String note;
+	@Column(name = "profile_pic")
 	private String profilePic;
+	private String emailId;
+	private String password;
 	
 	@ElementCollection
-	@CollectionTable(name="employee_department",joinColumns = @JoinColumn(name = "id"))
-	@Column(name="department")
-	private List<String> departments;
-
-	public EmployeePayrollData() {
-	}
+	@CollectionTable(name = "employee_department", joinColumns = @JoinColumn(name = "id"))
+	@Column(name = "department")
+	private List<String> department;
 	
+	
+public EmployeePayrollData() {
 
-	public EmployeePayrollData( EmployeePayrollDTO empPayrollDTO) {
-
-		
-		this.name = empPayrollDTO.name;
-		this.salary = empPayrollDTO.salary;
-		this.gender = empPayrollDTO.gender;
-		this.startDate = empPayrollDTO.startDate;
-		this.note = empPayrollDTO.note;
-		this.departments = empPayrollDTO.departments;
-		this.profilePic = empPayrollDTO.profilePic;
 	}
 
-
-	public void updateEmployeePayrollData(EmployeePayrollDTO empPayrollDTO) {
-		this.updateEmployeePayrollData(empPayrollDTO);
-		
+	public EmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
+		this.updateEmployeePayollData(employeePayrollDTO);
 	}
 
+	public void updateEmployeePayollData(EmployeePayrollDTO employeePayrollDTO) {
+		this.name = employeePayrollDTO.name;
+		this.salary = employeePayrollDTO.salary;
+		this.gender = employeePayrollDTO.gender;
+		this.note = employeePayrollDTO.note;
+//		this.startDate = employeePayrollDTO.startDate;
+		this.profilePic = employeePayrollDTO.profilePic;
+		this.department = employeePayrollDTO.department;
+		this.emailId = employeePayrollDTO.emailId;
+		this.password = employeePayrollDTO.password;
+	}
 
 
 }
